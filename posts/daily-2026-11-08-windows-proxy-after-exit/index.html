@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="network-portal">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置 · 六佬上网指南</title>
+<meta name="description" content="关掉 Clash 后电脑上不了网怎么办？本文按 Windows 11 的设置顺序，说明如何检查残留的系统代理、恢复直接上网，并区分浏览器单独设置与原有网络故障，适合新手照着排查。">
+<meta name="keywords" content="关掉Clash后上不了网,Windows代理设置,系统代理,Clash Verge Rev,网络排障">
+<meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/">
+<meta property="og:title" content="关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置">
+<meta property="og:description" content="关掉 Clash 后电脑上不了网怎么办？本文按 Windows 11 的设置顺序，说明如何检查残留的系统代理、恢复直接上网，并区分浏览器单独设置与原有网络故障，适合新手照着排查。">
+<meta property="og:url" content="https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="六佬上网指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png"><meta property="og:image:alt" content="六佬上网指南">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置">
+<meta name="twitter:description" content="关掉 Clash 后电脑上不了网怎么办？本文按 Windows 11 的设置顺序，说明如何检查残留的系统代理、恢复直接上网，并区分浏览器单独设置与原有网络故障，适合新手照着排查。">
+<meta name="twitter:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<meta name="author" content="六佬"><meta property="article:published_time" content="2026-11-08T21:01:29&#43;08:00"><meta property="article:modified_time" content="2026-11-08T21:02:04&#43;08:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/#article","@type":"BlogPosting","author":{"@type":"Person","name":"六佬"},"dateModified":"2026-11-08T21:02:04+08:00","datePublished":"2026-11-08T21:01:29+08:00","description":"关掉 Clash 后电脑上不了网怎么办？本文按 Windows 11 的设置顺序，说明如何检查残留的系统代理、恢复直接上网，并区分浏览器单独设置与原有网络故障，适合新手照着排查。","headline":"关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置","inLanguage":"zh-CN","mainEntityOfPage":{"@id":"https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/","@type":"WebPage"},"url":"https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://liulao.blog/","name":"六佬上网指南","position":1},{"@type":"ListItem","item":"https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/","name":"关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置","position":2}]}]}</script>
+
+<script>(()=>{let mode='system';try{const saved=localStorage.getItem('reader-theme');if(['system','light','dark'].includes(saved))mode=saved}catch{}const root=document.documentElement;root.dataset.colorMode=mode;root.classList.toggle('dark',mode==='dark'||(mode==='system'&&matchMedia('(prefers-color-scheme: dark)').matches))})();</script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/style.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/advertisements.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/search.css"><script defer src="https://liulao.blog/assets/theme/search.js"></script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/network-portal-1.0.2.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/viewer.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/reader.css">
+<link rel="icon" href="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/artalk.css"><script defer src="https://liulao.blog/assets/theme/artalk.js"></script>
+<script defer src="https://liulao.blog/assets/theme/theme.js"></script>
+<script defer src="https://liulao.blog/assets/theme/reader.js"></script>
+<script defer src="https://liulao.blog/assets/theme/viewer.js"></script>
+<script defer src="https://liulao.blog/assets/theme/image-viewer.js"></script>
+
+<script defer src="https://liulao.blog/assets/theme/interactions.js"></script>
+
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5NFX4LKW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta name="msvalidate.01" content="3D562902FFD6655EA5B649095B7D8365" />
+
+<script defer src="https://liulao.blog/assets/xblog/google-analytics.js" data-xblog-google-analytics="G-CP3ZGGL7ZQ" data-site-hosts="liulao.blog,www.liulao.blog"></script></head>
+
+<body class="reader-page portal-page article-page">
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="https://liulao.blog/"><img src="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png" alt="" width="38" height="38"><span>六佬上网指南</span></a>
+<nav id="site-navigation" aria-label="站点导航"><a href="https://liulao.blog/">首页</a></nav>
+<a class="search-toggle" href="https://liulao.blog/search/" data-open-dialog="search-dialog" aria-haspopup="dialog" aria-controls="search-dialog" aria-label="搜索" title="搜索"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></a>
+<button id="theme-mode" class="theme-toggle theme-cycle" type="button" aria-label="明暗模式：跟随系统，点击切换为明亮" title="跟随系统 · 点击切换为明亮">
+<svg class="theme-icon-system" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+<svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.5A8.5 8.5 0 0 1 8.5 3.8 8.5 8.5 0 1 0 20.2 15.5Z"/></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+<span id="theme-mode-status" class="visually-hidden" role="status" aria-live="polite"></span>
+<button id="menu-toggle" class="menu-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="打开菜单" title="打开菜单">
+<svg class="menu-icon-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+<svg class="menu-icon-close" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>
+</button>
+</div>
+</header>
+
+<div class="page-viewport article-viewport"><div class="page-scroll article-scroll">
+<main id="main" tabindex="-1" class="shell portal-shell article-shell" data-has-toc="true">
+
+<nav class="breadcrumbs" aria-label="面包屑导航"><ol><li><a href="https://liulao.blog/">六佬上网指南</a></li><li><span aria-current="page">关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置</span></li></ol></nav>
+
+
+<article data-pagefind-body>
+<header class="article-header">
+<div class="eyebrow" data-pagefind-ignore>知识与指南</div>
+<h1 data-pagefind-meta="title">关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置</h1>
+<div class="metadata" data-pagefind-ignore><span>六佬</span><time datetime="2026-11-08T21:01:29&#43;08:00">2026-11-08</time><span><span id="page-views">—</span> 次阅读</span></div>
+<div class="chips" data-pagefind-ignore><a href="https://liulao.blog/categories/network-tutorials/">网络教程</a></div>
+</header>
+<div class="prose"><p>关掉 Clash 或 Clash Verge Rev 后，Wi-Fi 明明连着，电脑却打不开网页，可以先看看 Windows 的“使用代理服务器”开关。<strong>如果客户端已经退出，系统还保留着它的代理设置，部分软件就可能继续往已经停止工作的程序发送请求。</strong></p>
+<p>六佬建议先按下面的顺序检查，每做一步就试一次网页。本文以个人电脑的 Windows 11 为例，先判断问题出在哪里，再调整对应设置。</p>
+<h2 id="heading">第一步：看看是不是只有这台电脑有问题</h2>
+<p>准备两三个平时不用代理也能打开的网站，分别在电脑上试一下。再让手机连接同一个 Wi-Fi，暂时关闭手机移动数据，用相同的网站比较。</p>
+<ul>
+<li>手机能打开，电脑在退出客户端后打不开：优先检查电脑上的代理设置。</li>
+<li>手机和电脑都打不开：先确认 Wi-Fi、路由器和宽带连接是否正常。</li>
+<li>只有一个网站打不开：换其他网站比较，暂时不能判断整台电脑已经断网。</li>
+</ul>
+<p>这里要测试的是原本可以直接访问的网页。关闭代理后，某些必须通过代理才能访问的网站仍打不开，并不能说明恢复失败。</p>
+<h2 id="heading-1">第二步：在客户端里关闭系统代理，再正常退出</h2>
+<p>如果客户端还能启动，可以重新打开它，找到“系统代理”开关，将它关闭，再通过软件菜单正常退出。随后重新打开浏览器测试。</p>
+<p>这样做是为了让软件有机会收回自己改过的设置。仅关闭主窗口是否会退出程序，要看客户端的设置；操作后也可以看看任务栏右下角是否仍有它的图标。</p>
+<p>如果软件已经卸载、无法打开，或者这样做后仍不能上网，继续检查 Windows 的设置。Clash Verge Rev 官方常见问题也列出了这一情况：异常退出后，系统代理可能仍然开启。<a href="https://www.clashverge.dev/faq/windows.html">官方问题说明</a></p>
+<h2 id="-windows-">第三步：检查 Windows 的手动代理开关</h2>
+<p>先拍下当前设置，方便需要时恢复。然后按这个顺序操作：</p>
+<ol>
+<li>打开 Windows“设置”。</li>
+<li>进入“网络和 Internet”，打开“代理”。</li>
+<li>在“手动设置代理”里，找到“使用代理服务器”旁的编辑入口；不同版本可能显示“设置”或“编辑”。</li>
+<li>确认这是自己使用客户端时留下的设置，且现在要恢复直接上网后，关闭“使用代理服务器”，并保存。</li>
+<li>重新打开浏览器，再测试第一步选好的网站。</li>
+</ol>
+<p>“自动检测设置”和“使用设置脚本”是其他选项，这次先保留原来的状态。公司或学校统一配置的电脑可能需要指定代理，遇到这种情况应按管理员的要求处理。<a href="https://support.microsoft.com/en-us/windows/experience/connectivity-networking/use-a-proxy-server-in-windows">微软 Windows 代理设置说明</a></p>
+<p>如果关掉这个开关后恢复正常，说明原来的手动代理设置值得重点检查。下次需要使用客户端时，再从客户端中启用系统代理，不用凭印象重新填写地址和端口。</p>
+<h2 id="heading-2">第四步：只有一个浏览器打不开，就检查它自己的设置</h2>
+<p>如果其他浏览器已经正常，只有 Firefox 仍然报连接错误，可以在 Firefox 设置里搜索“代理”，查看连接设置。</p>
+<p>Firefox 可以跟随系统设置，也可以单独保存手动代理。如果你以前为它填过独立代理，现在希望它跟随已恢复的 Windows 设置，可以记录原配置后改为“使用系统代理设置”。页面若提示有扩展控制连接，还要检查对应扩展。<a href="https://support.mozilla.org/en-US/kb/connection-settings-firefox">Mozilla 连接设置说明</a></p>
+<p>反过来，如果浏览器已经正常，只有命令行工具不能联网，可以接着看本站的<a href="https://liulao.blog/posts/browser-works-terminal-connection-fails/">浏览器能上网，命令行工具却连接失败，怎么查？</a>，按具体软件继续排查。</p>
+<h2 id="heading-3">开关关掉后又自动打开，接下来查什么？</h2>
+<p>先留意电脑里是否还有另一个代理客户端正在运行，或者某个客户端随开机自动启动。可以每次只退出一个自己认识的相关软件，再观察 Windows 代理开关有没有变化。这样比较，才容易找出是谁改了设置。</p>
+<p>如果手动代理本来就是关闭的，或者关闭后仍没有改善，就不要把问题全部归到这个开关上。记录“哪些网站失败、哪些软件正常、重新打开客户端后是否恢复”，再对照客户端文档继续检查。求助时可以参考<a href="https://liulao.blog/posts/network-help-without-sharing-secrets/">网络出问题怎么求助？发这几条信息就够了</a>。</p>
+<p>平时用完客户端，先关闭自己开启的代理功能，再正常退出。刚开始使用 Clash Verge Rev 的朋友，也可以对照<a href="https://liulao.blog/posts/clash-verge-rev-beginner-windows-mac/">本站基础设置教程</a>，确认导入、启用和退出的顺序。</p>
+<p><em>本文依据上述官方文档整理，设置路径核对于 2026 年 11 月 8 日；具体按钮名称以当前软件界面为准。</em></p>
+</div>
+<div class="article-likes" data-pagefind-ignore>
+<button id="page-like" class="like-button" type="button" aria-pressed="false" aria-describedby="page-like-message" disabled>
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+<span id="page-like-label">点赞</span><span id="page-like-count">—</span>
+</button><p id="page-like-message" role="status"></p>
+</div>
+
+<nav class="pagination" aria-label="相邻文章" data-pagefind-ignore><a href="https://liulao.blog/posts/flybit-trial-monthly-or-data-pack/">← 上一篇</a><a href="https://liulao.blog/posts/budget-airport-total-cost/">下一篇 →</a></nav>
+<section class="comments-section" data-pagefind-ignore><h2>评论</h2><div id="comments"></div></section>
+</article>
+<div class="article-rail">
+<aside class="toc"><div>本篇目录</div><nav aria-label="文章目录"><a class="level-2" href="#heading">第一步：看看是不是只有这台电脑有问题</a><a class="level-2" href="#heading-1">第二步：在客户端里关闭系统代理，再正常退出</a><a class="level-2" href="#-windows-">第三步：检查 Windows 的手动代理开关</a><a class="level-2" href="#heading-2">第四步：只有一个浏览器打不开，就检查它自己的设置</a><a class="level-2" href="#heading-3">开关关掉后又自动打开，接下来查什么？</a></nav></aside>
+</div>
+
+</main>
+</div>
+<button id="back-to-top" class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14M12 20V8m-5 5 5-5 5 5"/></svg>
+</button>
+</div>
+
+<footer class="site-footer portal-footer">
+
+<nav class="friend-links" aria-label="友情链接"><span class="friend-links-label">友情链接</span><a href="https://t.me/oldsix985" target="_blank" rel="noopener noreferrer">Telegram联系我 <span aria-hidden="true">↗</span></a></nav>
+<div class="portal-footer-bottom"><span>© 2026@六佬</span><span>资源与教程 · 持续更新</span></div>
+</footer>
+
+
+<dialog id="search-dialog" class="reader-dialog site-search" aria-labelledby="search-title" data-reader-dialog data-pagefind-ignore>
+<header class="reader-dialog-header"><h2 id="search-title">搜索文章</h2><button class="dialog-close" type="button" data-close-dialog aria-label="关闭搜索" title="关闭搜索">×</button></header>
+<div class="reader-dialog-body">
+
+<div id="site-search-ui" data-module="https://liulao.blog/pagefind/pagefind-component-ui.js" data-stylesheet="https://liulao.blog/pagefind/pagefind-component-ui.css" hidden>
+
+<pagefind-config bundle-path="https://liulao.blog/pagefind/" base-url="https://liulao.blog/" lang="zh-cn" no-worker></pagefind-config>
+<pagefind-input placeholder="搜索文章标题或正文"></pagefind-input>
+<pagefind-summary></pagefind-summary>
+<pagefind-results></pagefind-results>
+</div>
+<p id="search-status" class="search-status" role="status">正在加载搜索…</p>
+<button id="search-retry" class="button" type="button" hidden>重新加载</button>
+
+</div>
+</dialog>
+
+<script id="blog-comments-config" type="application/json">{"comments":true,"likes":true,"locale":"zh-CN","pageKey":"/p/b14018b9-f23a-4c2d-93c3-31d3a4abb326/","pageTitle":"关掉 Clash 后电脑上不了网？先检查 Windows 的代理设置","server":"https://upfqpobmiewm.sealosgzg.site","site":"xblog-d57a1fe1-0246-4640-82e3-722e40e5b8a7","views":true,"viewsBase":0}</script>
+
+</body>
+</html>
