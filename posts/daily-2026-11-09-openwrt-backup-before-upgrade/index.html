@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="network-portal">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenWrt 升级前怎么备份？配置、插件和数据分开留 · 六佬上网指南</title>
+<meta name="description" content="OpenWrt 升级前怎么备份？通过网页后台下载配置包，检查备份范围，记录插件与额外数据，并了解保留配置的适用条件。适合软路由新手按步骤准备。">
+<meta name="keywords" content="OpenWrt备份,软路由备份,OpenWrt升级,配置备份,保留配置">
+<meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://liulao.blog/posts/daily-2026-11-09-openwrt-backup-before-upgrade/">
+<meta property="og:title" content="OpenWrt 升级前怎么备份？配置、插件和数据分开留">
+<meta property="og:description" content="OpenWrt 升级前怎么备份？通过网页后台下载配置包，检查备份范围，记录插件与额外数据，并了解保留配置的适用条件。适合软路由新手按步骤准备。">
+<meta property="og:url" content="https://liulao.blog/posts/daily-2026-11-09-openwrt-backup-before-upgrade/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="六佬上网指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png"><meta property="og:image:alt" content="六佬上网指南">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenWrt 升级前怎么备份？配置、插件和数据分开留">
+<meta name="twitter:description" content="OpenWrt 升级前怎么备份？通过网页后台下载配置包，检查备份范围，记录插件与额外数据，并了解保留配置的适用条件。适合软路由新手按步骤准备。">
+<meta name="twitter:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<meta name="author" content="六佬"><meta property="article:published_time" content="2026-11-09T09:02:01&#43;08:00"><meta property="article:modified_time" content="2026-11-09T09:02:05&#43;08:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://liulao.blog/posts/daily-2026-11-09-openwrt-backup-before-upgrade/#article","@type":"BlogPosting","author":{"@type":"Person","name":"六佬"},"dateModified":"2026-11-09T09:02:05+08:00","datePublished":"2026-11-09T09:02:01+08:00","description":"OpenWrt 升级前怎么备份？通过网页后台下载配置包，检查备份范围，记录插件与额外数据，并了解保留配置的适用条件。适合软路由新手按步骤准备。","headline":"OpenWrt 升级前怎么备份？配置、插件和数据分开留","inLanguage":"zh-CN","mainEntityOfPage":{"@id":"https://liulao.blog/posts/daily-2026-11-09-openwrt-backup-before-upgrade/","@type":"WebPage"},"url":"https://liulao.blog/posts/daily-2026-11-09-openwrt-backup-before-upgrade/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://liulao.blog/","name":"六佬上网指南","position":1},{"@type":"ListItem","item":"https://liulao.blog/posts/daily-2026-11-09-openwrt-backup-before-upgrade/","name":"OpenWrt 升级前怎么备份？配置、插件和数据分开留","position":2}]}]}</script>
+
+<script>(()=>{let mode='system';try{const saved=localStorage.getItem('reader-theme');if(['system','light','dark'].includes(saved))mode=saved}catch{}const root=document.documentElement;root.dataset.colorMode=mode;root.classList.toggle('dark',mode==='dark'||(mode==='system'&&matchMedia('(prefers-color-scheme: dark)').matches))})();</script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/style.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/advertisements.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/search.css"><script defer src="https://liulao.blog/assets/theme/search.js"></script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/network-portal-1.0.2.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/viewer.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/reader.css">
+<link rel="icon" href="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/artalk.css"><script defer src="https://liulao.blog/assets/theme/artalk.js"></script>
+<script defer src="https://liulao.blog/assets/theme/theme.js"></script>
+<script defer src="https://liulao.blog/assets/theme/reader.js"></script>
+<script defer src="https://liulao.blog/assets/theme/viewer.js"></script>
+<script defer src="https://liulao.blog/assets/theme/image-viewer.js"></script>
+
+<script defer src="https://liulao.blog/assets/theme/interactions.js"></script>
+
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5NFX4LKW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta name="msvalidate.01" content="3D562902FFD6655EA5B649095B7D8365" />
+
+<script defer src="https://liulao.blog/assets/xblog/google-analytics.js" data-xblog-google-analytics="G-CP3ZGGL7ZQ" data-site-hosts="liulao.blog,www.liulao.blog"></script></head>
+
+<body class="reader-page portal-page article-page">
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="https://liulao.blog/"><img src="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png" alt="" width="38" height="38"><span>六佬上网指南</span></a>
+<nav id="site-navigation" aria-label="站点导航"><a href="https://liulao.blog/">首页</a></nav>
+<a class="search-toggle" href="https://liulao.blog/search/" data-open-dialog="search-dialog" aria-haspopup="dialog" aria-controls="search-dialog" aria-label="搜索" title="搜索"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></a>
+<button id="theme-mode" class="theme-toggle theme-cycle" type="button" aria-label="明暗模式：跟随系统，点击切换为明亮" title="跟随系统 · 点击切换为明亮">
+<svg class="theme-icon-system" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+<svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.5A8.5 8.5 0 0 1 8.5 3.8 8.5 8.5 0 1 0 20.2 15.5Z"/></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+<span id="theme-mode-status" class="visually-hidden" role="status" aria-live="polite"></span>
+<button id="menu-toggle" class="menu-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="打开菜单" title="打开菜单">
+<svg class="menu-icon-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+<svg class="menu-icon-close" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>
+</button>
+</div>
+</header>
+
+<div class="page-viewport article-viewport"><div class="page-scroll article-scroll">
+<main id="main" tabindex="-1" class="shell portal-shell article-shell" data-has-toc="true">
+
+<nav class="breadcrumbs" aria-label="面包屑导航"><ol><li><a href="https://liulao.blog/">六佬上网指南</a></li><li><span aria-current="page">OpenWrt 升级前怎么备份？配置、插件和数据分开留</span></li></ol></nav>
+
+
+<article data-pagefind-body>
+<header class="article-header">
+<div class="eyebrow" data-pagefind-ignore>知识与指南</div>
+<h1 data-pagefind-meta="title">OpenWrt 升级前怎么备份？配置、插件和数据分开留</h1>
+<div class="metadata" data-pagefind-ignore><span>六佬</span><time datetime="2026-11-09T09:02:01&#43;08:00">2026-11-09</time><span><span id="page-views">—</span> 次阅读</span></div>
+<div class="chips" data-pagefind-ignore><a href="https://liulao.blog/categories/soft-router-troubleshooting/">软路由排障</a></div>
+</header>
+<div class="prose"><p>OpenWrt 升级前，先把配置备份下载到电脑，再记下额外安装的插件和重要设置。<strong>普通配置备份主要保存选定的设置文件，不能据此认为整个系统、所有软件和数据都已经备份好了。</strong></p>
+<p>六佬建议准备这三样东西：</p>
+<ul>
+<li>一份已经下载到电脑、能够打开的配置备份。</li>
+<li>一份自己正在使用的插件清单。插件就是后来增加的功能软件。</li>
+<li>一份设备型号、当前版本、管理地址和网线接法的记录。</li>
+</ul>
+<p>下面适合还能正常登录 OpenWrt 网页管理后台的朋友。LuCI 就是这个网页后台的名字；第三方固件的菜单可能不同，具体以对应固件说明为准。</p>
+<h2 id="heading">第一步：记下当前版本和管理地址</h2>
+<p>先给设备建一个单独的备份文件夹，例如“客厅软路由－2026-11-09”。把型号、当前固件版本、后台登录地址记在里面，再拍一张网口接线照片。</p>
+<p>重点记清楚哪根线接光猫，哪根线接家里的交换机或无线设备。如果你改过管理地址，也一起记下来。等设备重启后需要重新连接时，这些信息比凭印象找地址更有用。</p>
+<p>宽带拨号账号等恢复联网必需的信息，也要确认自己能够找回。保存这些记录时，用只有自己能访问的位置。</p>
+<h2 id="heading-1">第二步：在网页后台下载配置备份</h2>
+<p>OpenWrt 官方文档给出的入口是：</p>
+<ol>
+<li>登录管理后台，进入“系统”，打开“备份／升级”。英文名称是 Backup / Flash Firmware。</li>
+<li>在备份区域找到“生成备份”一类的按钮，英文为 Generate archive。</li>
+<li>下载生成的压缩包，放进刚才的文件夹。</li>
+</ol>
+<p>同一页面可能还有恢复、重置和刷写固件等按钮，下载备份时只操作备份区域。<a href="https://openwrt.org/docs/guide-user/troubleshooting/backup_restore">OpenWrt 官方备份说明</a></p>
+<p>下载完成后，到电脑的下载目录确认文件确实存在。如果改文件名，保留原来的扩展名，并加上设备、版本和日期，方便以后分辨。</p>
+<h2 id="heading-2">第三步：确认需要的文件有没有被备份</h2>
+<p>下载到一个文件，只完成了第一步。打开压缩包看看能否正常列出内容，也可以在后台备份页面的配置区域查看“文件列表”，英文入口为 Open list。</p>
+<p>官方说明建议核对这个列表，确认想保存的文件已经包含在内。额外服务的数据或自己放在其他目录的文件，可能需要另外处理。<a href="https://openwrt.org/docs/guide-user/troubleshooting/backup_restore">备份范围与文件列表</a></p>
+<p>对新手来说，可以先列出“我必须保留什么”：例如网络设置、自己添加的规则、某个插件的资料。看不懂文件路径时，查该插件的备份说明；不要凭目录名字猜测已经保存。</p>
+<p>这里只是检查文件是否下载完整、所需内容是否在内，不需要为了验证备份就立刻往正在使用的软路由里恢复。把备份再复制一份到另一处自己能访问的存储位置，也更容易找回。</p>
+<h2 id="heading-3">第四步：把插件名称和额外数据单独记下来</h2>
+<p>普通固件升级后，之前自行安装、又没有包含在新固件中的软件通常需要重新安装。即使旧设置文件保留下来，也不代表对应软件已经安装好了。<a href="https://openwrt.org/docs/guide-user/installation/generic.sysupgrade">OpenWrt 升级流程说明</a></p>
+<p>可以在后台的已安装软件列表或各插件页面，记录自己实际使用的软件包名称、用途和来源。例如：哪个负责远程连接，哪个负责下载，哪个保存了自定义规则。若插件有自己的导出功能，再按它的说明保存一份。</p>
+<p>使用带软件包定制功能的升级方式时，处理方法会不同，要按该工具的文档核对。不能把某一种升级方式能保留软件，理解成所有配置备份都包含软件。</p>
+<p>如果软路由还连接了硬盘，保存下载文件或其他业务数据，也要给这些数据单独安排备份。一个配置包是否包含它们，应以实际文件列表为准。</p>
+<h2 id="heading-4">常见问题：勾选“保留配置”，还需要下载备份吗？</h2>
+<p>建议仍然下载一份。升级时保留配置，是让新系统继续使用相应设置；下载到电脑的备份，则让你在设备无法进入后台时，也能查阅之前保存的内容。</p>
+<p>是否适合保留配置，要看目标版本的发布说明和设备要求。跨版本、换固件来源时，不能只看按钮能够勾选就认为兼容。OpenWrt 的升级文档也要求留意配置兼容性。<a href="https://openwrt.org/docs/guide-quick-start/sysupgrade.luci">官方网页升级说明</a></p>
+<p>准备恢复时，可先对照本站的<a href="https://liulao.blog/posts/router-check-before-importing-config/">给软路由导入配置前，先检查这几个地方</a>，核对配置来源和适用环境，再决定导入还是重新填写。</p>
+<h2 id="heading-5">常见问题：备份包可以发到群里帮忙检查吗？</h2>
+<p>完整备份可能含有账号、无线密码、密钥或其他私密设置。求助时优先说明设备型号、版本、操作步骤和报错文字，只提供经过遮挡的必要截图。具体可以参考<a href="https://liulao.blog/posts/network-help-without-sharing-secrets/">网络出问题怎么求助？发这几条信息就够了</a>。</p>
+<p>准备升级前，再检查一次：配置包找得到、内容能打开、插件名称有记录、重要数据有另外的副本。之后选择哪种升级方式，就按自己的设备和目标版本说明继续。</p>
+<p><em>本文依据 OpenWrt 官方文档整理，资料核对于 2026 年 11 月 9 日。</em></p>
+</div>
+<div class="article-likes" data-pagefind-ignore>
+<button id="page-like" class="like-button" type="button" aria-pressed="false" aria-describedby="page-like-message" disabled>
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+<span id="page-like-label">点赞</span><span id="page-like-count">—</span>
+</button><p id="page-like-message" role="status"></p>
+</div>
+
+<nav class="pagination" aria-label="相邻文章" data-pagefind-ignore><a href="https://liulao.blog/posts/flybit-trial-monthly-or-data-pack/">← 上一篇</a><a href="https://liulao.blog/posts/daily-2026-11-08-windows-proxy-after-exit/">下一篇 →</a></nav>
+<section class="comments-section" data-pagefind-ignore><h2>评论</h2><div id="comments"></div></section>
+</article>
+<div class="article-rail">
+<aside class="toc"><div>本篇目录</div><nav aria-label="文章目录"><a class="level-2" href="#heading">第一步：记下当前版本和管理地址</a><a class="level-2" href="#heading-1">第二步：在网页后台下载配置备份</a><a class="level-2" href="#heading-2">第三步：确认需要的文件有没有被备份</a><a class="level-2" href="#heading-3">第四步：把插件名称和额外数据单独记下来</a><a class="level-2" href="#heading-4">常见问题：勾选“保留配置”，还需要下载备份吗？</a><a class="level-2" href="#heading-5">常见问题：备份包可以发到群里帮忙检查吗？</a></nav></aside>
+</div>
+
+</main>
+</div>
+<button id="back-to-top" class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14M12 20V8m-5 5 5-5 5 5"/></svg>
+</button>
+</div>
+
+<footer class="site-footer portal-footer">
+
+<nav class="friend-links" aria-label="友情链接"><span class="friend-links-label">友情链接</span><a href="https://t.me/oldsix985" target="_blank" rel="noopener noreferrer">Telegram联系我 <span aria-hidden="true">↗</span></a></nav>
+<div class="portal-footer-bottom"><span>© 2026@六佬</span><span>资源与教程 · 持续更新</span></div>
+</footer>
+
+
+<dialog id="search-dialog" class="reader-dialog site-search" aria-labelledby="search-title" data-reader-dialog data-pagefind-ignore>
+<header class="reader-dialog-header"><h2 id="search-title">搜索文章</h2><button class="dialog-close" type="button" data-close-dialog aria-label="关闭搜索" title="关闭搜索">×</button></header>
+<div class="reader-dialog-body">
+
+<div id="site-search-ui" data-module="https://liulao.blog/pagefind/pagefind-component-ui.js" data-stylesheet="https://liulao.blog/pagefind/pagefind-component-ui.css" hidden>
+
+<pagefind-config bundle-path="https://liulao.blog/pagefind/" base-url="https://liulao.blog/" lang="zh-cn" no-worker></pagefind-config>
+<pagefind-input placeholder="搜索文章标题或正文"></pagefind-input>
+<pagefind-summary></pagefind-summary>
+<pagefind-results></pagefind-results>
+</div>
+<p id="search-status" class="search-status" role="status">正在加载搜索…</p>
+<button id="search-retry" class="button" type="button" hidden>重新加载</button>
+
+</div>
+</dialog>
+
+<script id="blog-comments-config" type="application/json">{"comments":true,"likes":true,"locale":"zh-CN","pageKey":"/p/e52478be-c0af-46b4-9bce-ac4e7601eef1/","pageTitle":"OpenWrt 升级前怎么备份？配置、插件和数据分开留","server":"https://upfqpobmiewm.sealosgzg.site","site":"xblog-d57a1fe1-0246-4640-82e3-722e40e5b8a7","views":true,"viewsBase":0}</script>
+
+</body>
+</html>
