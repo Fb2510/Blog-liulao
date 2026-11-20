@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://liulao.blog/</loc>
-    <lastmod>2026-11-19T01:06:18Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/categories/airport-recommendations/</loc>
@@ -10,11 +10,15 @@
   </url>
   <url>
     <loc>https://liulao.blog/categories/network-tutorials/</loc>
-    <lastmod>2026-11-17T01:07:15Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/categories/network-tutorials/page/2/</loc>
-    <lastmod>2026-11-17T01:07:15Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
+  </url>
+  <url>
+    <loc>https://liulao.blog/categories/network-tutorials/page/3/</loc>
+    <lastmod>2026-11-20T01:05:04Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/categories/soft-router-troubleshooting/</loc>
@@ -22,15 +26,19 @@
   </url>
   <url>
     <loc>https://liulao.blog/page/2/</loc>
-    <lastmod>2026-11-19T01:06:18Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/page/3/</loc>
-    <lastmod>2026-11-19T01:06:18Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/page/4/</loc>
-    <lastmod>2026-11-19T01:06:18Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
+  </url>
+  <url>
+    <loc>https://liulao.blog/page/5/</loc>
+    <lastmod>2026-11-20T01:05:04Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/posts/airport-first-purchase-checklist/</loc>
@@ -114,11 +122,15 @@
   </url>
   <url>
     <loc>https://liulao.blog/posts/daily-2026-11-19-airport-100mbps-speed-limit/</loc>
-    <lastmod>2026-11-19T01:05:51Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
+  </url>
+  <url>
+    <loc>https://liulao.blog/posts/daily-2026-11-20-iphone-forget-wifi-reset-network/</loc>
+    <lastmod>2026-11-20T01:05:04Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/posts/flybit-trial-monthly-or-data-pack/</loc>
-    <lastmod>2026-11-19T01:06:18Z</lastmod>
+    <lastmod>2026-11-20T01:05:23Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/posts/free-airport-trial-practical-check/</loc>
