@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="network-portal">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenWrt 断网后重启就好？先保存日志再排查 · 六佬上网指南</title>
+<meta name="description" content="OpenWrt 断网后重启就好怎么办？教你在重启前通过 LuCI、logread 和 dmesg 保存日志，对照故障时间与实际现象，整理有用的排查信息。">
+<meta name="keywords" content="OpenWrt日志,软路由断网,logread,重启前保存日志">
+<meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/">
+<meta property="og:title" content="OpenWrt 断网后重启就好？先保存日志再排查">
+<meta property="og:description" content="OpenWrt 断网后重启就好怎么办？教你在重启前通过 LuCI、logread 和 dmesg 保存日志，对照故障时间与实际现象，整理有用的排查信息。">
+<meta property="og:url" content="https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="六佬上网指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png"><meta property="og:image:alt" content="六佬上网指南">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenWrt 断网后重启就好？先保存日志再排查">
+<meta name="twitter:description" content="OpenWrt 断网后重启就好怎么办？教你在重启前通过 LuCI、logread 和 dmesg 保存日志，对照故障时间与实际现象，整理有用的排查信息。">
+<meta name="twitter:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<meta name="author" content="六佬"><meta property="article:published_time" content="2026-11-21T09:00:44&#43;08:00"><meta property="article:modified_time" content="2026-11-21T09:00:48&#43;08:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/#article","@type":"BlogPosting","author":{"@type":"Person","name":"六佬"},"dateModified":"2026-11-21T09:00:48+08:00","datePublished":"2026-11-21T09:00:44+08:00","description":"OpenWrt 断网后重启就好怎么办？教你在重启前通过 LuCI、logread 和 dmesg 保存日志，对照故障时间与实际现象，整理有用的排查信息。","headline":"OpenWrt 断网后重启就好？先保存日志再排查","inLanguage":"zh-CN","mainEntityOfPage":{"@id":"https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/","@type":"WebPage"},"url":"https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://liulao.blog/","name":"六佬上网指南","position":1},{"@type":"ListItem","item":"https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/","name":"OpenWrt 断网后重启就好？先保存日志再排查","position":2}]}]}</script>
+
+<script>(()=>{let mode='system';try{const saved=localStorage.getItem('reader-theme');if(['system','light','dark'].includes(saved))mode=saved}catch{}const root=document.documentElement;root.dataset.colorMode=mode;root.classList.toggle('dark',mode==='dark'||(mode==='system'&&matchMedia('(prefers-color-scheme: dark)').matches))})();</script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/style.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/advertisements.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/search.css"><script defer src="https://liulao.blog/assets/theme/search.js"></script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/network-portal-1.0.2.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/viewer.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/reader.css">
+<link rel="icon" href="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/artalk.css"><script defer src="https://liulao.blog/assets/theme/artalk.js"></script>
+<script defer src="https://liulao.blog/assets/theme/theme.js"></script>
+<script defer src="https://liulao.blog/assets/theme/reader.js"></script>
+<script defer src="https://liulao.blog/assets/theme/viewer.js"></script>
+<script defer src="https://liulao.blog/assets/theme/image-viewer.js"></script>
+
+<script defer src="https://liulao.blog/assets/theme/interactions.js"></script>
+
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5NFX4LKW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta name="msvalidate.01" content="3D562902FFD6655EA5B649095B7D8365" />
+
+<script defer src="https://liulao.blog/assets/xblog/google-analytics.js" data-xblog-google-analytics="G-CP3ZGGL7ZQ" data-site-hosts="liulao.blog,www.liulao.blog"></script></head>
+
+<body class="reader-page portal-page article-page">
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="https://liulao.blog/"><img src="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png" alt="" width="38" height="38"><span>六佬上网指南</span></a>
+<nav id="site-navigation" aria-label="站点导航"><a href="https://liulao.blog/">首页</a></nav>
+<a class="search-toggle" href="https://liulao.blog/search/" data-open-dialog="search-dialog" aria-haspopup="dialog" aria-controls="search-dialog" aria-label="搜索" title="搜索"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></a>
+<button id="theme-mode" class="theme-toggle theme-cycle" type="button" aria-label="明暗模式：跟随系统，点击切换为明亮" title="跟随系统 · 点击切换为明亮">
+<svg class="theme-icon-system" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+<svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.5A8.5 8.5 0 0 1 8.5 3.8 8.5 8.5 0 1 0 20.2 15.5Z"/></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+<span id="theme-mode-status" class="visually-hidden" role="status" aria-live="polite"></span>
+<button id="menu-toggle" class="menu-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="打开菜单" title="打开菜单">
+<svg class="menu-icon-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+<svg class="menu-icon-close" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>
+</button>
+</div>
+</header>
+
+<div class="page-viewport article-viewport"><div class="page-scroll article-scroll">
+<main id="main" tabindex="-1" class="shell portal-shell article-shell" data-has-toc="true">
+
+<nav class="breadcrumbs" aria-label="面包屑导航"><ol><li><a href="https://liulao.blog/">六佬上网指南</a></li><li><span aria-current="page">OpenWrt 断网后重启就好？先保存日志再排查</span></li></ol></nav>
+
+
+<article data-pagefind-body>
+<header class="article-header">
+<div class="eyebrow" data-pagefind-ignore>知识与指南</div>
+<h1 data-pagefind-meta="title">OpenWrt 断网后重启就好？先保存日志再排查</h1>
+<div class="metadata" data-pagefind-ignore><span>六佬</span><time datetime="2026-11-21T09:00:44&#43;08:00">2026-11-21</time><span><span id="page-views">—</span> 次阅读</span></div>
+<div class="chips" data-pagefind-ignore><a href="https://liulao.blog/categories/soft-router-troubleshooting/">软路由排障</a></div>
+</header>
+<div class="prose"><p>软路由断网后，重启一下又能用，先别把这当成已经修好。下次故障出现时，如果还能进入 OpenWrt 后台，先把系统日志和内核日志保存到电脑，再安排重启。日志就是设备运行时留下的文字记录，能帮助你把断网时间和当时发生的事情对上。</p>
+<p>这篇适合“偶尔断网、重启后恢复”，或准备找人帮忙排查的用户。先做三件事：</p>
+<ul>
+<li>用手机记下断网时间，以及哪些设备、哪些网页或应用受影响。</li>
+<li>在重启前保存能看到的日志，并记录路由器显示的时间。</li>
+<li>重启后再测同样的操作，记录是否恢复、多久后再次出现。</li>
+</ul>
+<h2 id="heading">为什么要先保存，再重启？</h2>
+<p>OpenWrt 默认把系统日志放在内存里的循环缓冲区，可以理解成容量有限的临时记录本。新的记录不断进入，较早的记录会被挤掉；重启后，默认内存日志也不会作为历史文件留下来。若你另外配置了外部保存方式，情况才可能不同。<a href="https://openwrt.org/docs/guide-user/base-system/system_configuration">OpenWrt 日志配置说明</a></p>
+<p>所以，恢复上网之后再打开日志，看到的可能主要是这次开机的过程，故障发生前的线索已经不在了。先存一份到电脑，之后才有材料可看。</p>
+<p>家里急着开会、上课时，可以先恢复网络。只要记下“几点重启、重启前没来得及保存”，后续排查就不会把新日志误当成旧现场。</p>
+<h2 id="heading-1">不会用命令：在网页后台保存两份日志</h2>
+<p>LuCI 是 OpenWrt 常见的网页管理界面。不同版本、主题或定制固件的菜单位置可能不同，在“状态”里找“系统日志”和“内核日志”；有些版本把它们放在同一个日志菜单下。<a href="https://github.com/openwrt/luci/blob/master/modules/luci-mod-status/root/usr/share/luci/menu.d/luci-mod-status.json">LuCI 官方日志菜单</a></p>
+<ol>
+<li>用仍连接着家里网络的电脑打开平时的管理地址，登录后台。</li>
+<li>打开“系统日志”，若设了搜索或筛选条件，先清除，保存当前能显示的记录。</li>
+<li>把日志文字复制到电脑上的文本文件，文件名写上日期、时间和“重启前系统日志”。</li>
+<li>再打开“内核日志”，同样保存一份，文件名注明“重启前内核日志”。</li>
+<li>打开保存的文件，确认里面确实有日志文字，再继续处理故障。</li>
+</ol>
+<p>系统日志通常能看到网络服务和程序的运行消息；内核日志更靠近设备、驱动和底层运行状态。两份内容可能有重叠。先各留一份，比一开始就挑出自己认为重要的两行更稳妥。</p>
+<p>网页显示的内容也可能有数量限制，这一步保存的是当前能取得的记录，不能保证包含故障全过程。若某个插件有独立日志页面，再补存它在同一时间附近的报错。</p>
+<h2 id="-ssh">已经会用 SSH：这几个命令怎么用？</h2>
+<p>SSH 是在电脑上远程登录路由器、输入命令的方式。下面的命令要在<strong>已经登录 OpenWrt 的终端里</strong>执行；不熟悉 SSH 的读者，使用前面的网页方法即可。</p>
+<p>查看当前系统日志：</p>
+<pre><code class="language-sh">logread
+</code></pre>
+<p>查看当前内核日志：</p>
+<pre><code class="language-sh">dmesg
+</code></pre>
+<p>这两条命令用于读取记录，不会替你修复网络。执行后，把相应输出保存到电脑上的文本文件；如果终端只能保留有限行数，注意检查有没有截掉前面的内容。<a href="https://openwrt.org/docs/guide-user/perf_and_log/log.messages">OpenWrt 日志读取说明</a></p>
+<p>若故障容易再次出现，可以在一个终端中持续查看系统日志：</p>
+<pre><code class="language-sh">logread -f
+</code></pre>
+<p>让它保持打开，再做一次会触发问题的操作。看到报错后，按 <strong>Ctrl+C</strong> 停止本次查看，保存相关输出。这里的 -f 表示继续跟随新消息；它本身不等于已经把日志保存到电脑文件里。<a href="https://github.com/openwrt/ubox/blob/master/log/logread.c">OpenWrt logread 参数说明</a></p>
+<h2 id="heading-2">拿到日志后，先看这三件事</h2>
+<p><strong>先对时间。</strong> 同时记录手机时间与路由器时间。如果两者差很多，先保留这份原始记录和时间差，再处理校时；不要把日志里的上午 8 点直接当成实际上午 8 点。相关操作可看<a href="https://liulao.blog/posts/daily-2026-11-18-openwrt-time-sync-after-reboot/">OpenWrt 时间不对的检查方法</a>。</p>
+<p>内核日志里如果只有方括号中的数字时间标记，先保留原样，不要直接当成手机显示的钟点；求助时一并提供当时的手机时间。</p>
+<p><strong>再看前后过程。</strong> 找到故障附近的记录，连同前后的连接变化、程序启动或退出消息一起看。只截一句“失败”，往往看不出它是在断网之前出现，还是断网之后受到影响才出现。</p>
+<p><strong>最后对照实际现象。</strong> 是所有设备都没网，还是只有电脑？是所有网页打不开，还是某个插件不能用？日志里出现一条报错，不能单凭它断定是哪件硬件坏了。</p>
+<p>可以另外写一段简短说明：</p>
+<pre><code class="language-text">设备型号、OpenWrt 版本：
+故障时间（以手机为准）：
+路由器当时显示的时间：
+受影响的设备或应用：
+故障前刚做过的调整：
+重启后是否恢复、多久后复发：
+</code></pre>
+<p>先保存完整记录供自己查看；发给别人时，再挑出相关时间段。遮住账号、密码、完整订阅地址及私人连接信息，同时保留错误文字、时间和前后顺序。可照着<a href="https://liulao.blog/posts/network-help-without-sharing-secrets/">网络故障求助清单</a>整理。</p>
+<h2 id="heading-3">常见问题</h2>
+<h3 id="heading-4">后台已经完全打不开，还能保存吗？</h3>
+<p>先确认电脑仍接在这台路由器的局域网，也就是家里的内部网络。若网页进不去，但原有 SSH 连接还能用，可以从终端读取；两者都无法连接时，不必为了保存日志一直拖着恢复。记下故障时间、指示灯状态和当时的连接情况，恢复后再考虑为下一次故障提前记录。</p>
+<h3 id="heading-5">重启后正常了，能证明问题已经解决吗？</h3>
+<p>只能说明这次重启后暂时恢复，不能据此确定原因。保留重启前后的对照，观察同样的使用场景是否复发，再根据线索决定下一步。</p>
+<h3 id="heading-6">日志很短，是不是没开启记录？</h3>
+<p>不一定。记录容量、网页筛选、显示行数和刚刚重启，都可能让你只看到一小段。先检查当前显示条件和保存时间。想跨重启长期留存，需要另外安排日志保存方式；只把当前页面打开着，不能保证故障前的记录一直还在。</p>
+</div>
+<div class="article-likes" data-pagefind-ignore>
+<button id="page-like" class="like-button" type="button" aria-pressed="false" aria-describedby="page-like-message" disabled>
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+<span id="page-like-label">点赞</span><span id="page-like-count">—</span>
+</button><p id="page-like-message" role="status"></p>
+</div>
+
+<nav class="pagination" aria-label="相邻文章" data-pagefind-ignore><a href="https://liulao.blog/posts/flybit-trial-monthly-or-data-pack/">← 上一篇</a><a href="https://liulao.blog/posts/daily-2026-11-20-iphone-forget-wifi-reset-network/">下一篇 →</a></nav>
+<section class="comments-section" data-pagefind-ignore><h2>评论</h2><div id="comments"></div></section>
+</article>
+<div class="article-rail">
+<aside class="toc"><div>本篇目录</div><nav aria-label="文章目录"><a class="level-2" href="#heading">为什么要先保存，再重启？</a><a class="level-2" href="#heading-1">不会用命令：在网页后台保存两份日志</a><a class="level-2" href="#-ssh">已经会用 SSH：这几个命令怎么用？</a><a class="level-2" href="#heading-2">拿到日志后，先看这三件事</a><a class="level-2" href="#heading-3">常见问题</a><a class="level-3" href="#heading-4">后台已经完全打不开，还能保存吗？</a><a class="level-3" href="#heading-5">重启后正常了，能证明问题已经解决吗？</a><a class="level-3" href="#heading-6">日志很短，是不是没开启记录？</a></nav></aside>
+</div>
+
+</main>
+</div>
+<button id="back-to-top" class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14M12 20V8m-5 5 5-5 5 5"/></svg>
+</button>
+</div>
+
+<footer class="site-footer portal-footer">
+
+<nav class="friend-links" aria-label="友情链接"><span class="friend-links-label">友情链接</span><a href="https://t.me/oldsix985" target="_blank" rel="noopener noreferrer">Telegram联系我 <span aria-hidden="true">↗</span></a></nav>
+<div class="portal-footer-bottom"><span>© 2026@六佬</span><span>资源与教程 · 持续更新</span></div>
+</footer>
+
+
+<dialog id="search-dialog" class="reader-dialog site-search" aria-labelledby="search-title" data-reader-dialog data-pagefind-ignore>
+<header class="reader-dialog-header"><h2 id="search-title">搜索文章</h2><button class="dialog-close" type="button" data-close-dialog aria-label="关闭搜索" title="关闭搜索">×</button></header>
+<div class="reader-dialog-body">
+
+<div id="site-search-ui" data-module="https://liulao.blog/pagefind/pagefind-component-ui.js" data-stylesheet="https://liulao.blog/pagefind/pagefind-component-ui.css" hidden>
+
+<pagefind-config bundle-path="https://liulao.blog/pagefind/" base-url="https://liulao.blog/" lang="zh-cn" no-worker></pagefind-config>
+<pagefind-input placeholder="搜索文章标题或正文"></pagefind-input>
+<pagefind-summary></pagefind-summary>
+<pagefind-results></pagefind-results>
+</div>
+<p id="search-status" class="search-status" role="status">正在加载搜索…</p>
+<button id="search-retry" class="button" type="button" hidden>重新加载</button>
+
+</div>
+</dialog>
+
+<script id="blog-comments-config" type="application/json">{"comments":true,"likes":true,"locale":"zh-CN","pageKey":"/p/2e77c38b-51f1-4df9-909e-8a6991f2923b/","pageTitle":"OpenWrt 断网后重启就好？先保存日志再排查","server":"https://upfqpobmiewm.sealosgzg.site","site":"xblog-d57a1fe1-0246-4640-82e3-722e40e5b8a7","views":true,"viewsBase":0}</script>
+
+</body>
+</html>
