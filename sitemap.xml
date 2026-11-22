@@ -2,11 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://liulao.blog/</loc>
-    <lastmod>2026-11-21T01:01:07Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/categories/airport-recommendations/</loc>
-    <lastmod>2026-11-19T01:06:18Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
+  </url>
+  <url>
+    <loc>https://liulao.blog/categories/airport-recommendations/page/2/</loc>
+    <lastmod>2026-11-22T01:05:38Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/categories/network-tutorials/</loc>
@@ -30,19 +34,19 @@
   </url>
   <url>
     <loc>https://liulao.blog/page/2/</loc>
-    <lastmod>2026-11-21T01:01:07Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/page/3/</loc>
-    <lastmod>2026-11-21T01:01:07Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/page/4/</loc>
-    <lastmod>2026-11-21T01:01:07Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/page/5/</loc>
-    <lastmod>2026-11-21T01:01:07Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/posts/airport-first-purchase-checklist/</loc>
@@ -134,11 +138,15 @@
   </url>
   <url>
     <loc>https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/</loc>
-    <lastmod>2026-11-21T01:00:48Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
+  </url>
+  <url>
+    <loc>https://liulao.blog/posts/daily-2026-11-22-airport-netflix-unblocking-checks/</loc>
+    <lastmod>2026-11-22T01:05:38Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/posts/flybit-trial-monthly-or-data-pack/</loc>
-    <lastmod>2026-11-21T01:01:07Z</lastmod>
+    <lastmod>2026-11-22T01:05:56Z</lastmod>
   </url>
   <url>
     <loc>https://liulao.blog/posts/free-airport-trial-practical-check/</loc>
