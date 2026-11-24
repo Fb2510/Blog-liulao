@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="network-portal">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenWrt 内存占用很高怎么办？先分清空闲和可用 · 六佬上网指南</title>
+<meta name="description" content="OpenWrt 内存占用很高怎么办？通俗解释空闲内存、可用内存与缓存的区别，教你查看 MemAvailable、对比任务前后变化，并判断何时需要排查。">
+<meta name="keywords" content="OpenWrt内存占用高,OpenWrt可用内存,MemAvailable,软路由内存排查">
+<meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://liulao.blog/posts/daily-2026-11-24-openwrt-free-vs-available-memory/">
+<meta property="og:title" content="OpenWrt 内存占用很高怎么办？先分清空闲和可用">
+<meta property="og:description" content="OpenWrt 内存占用很高怎么办？通俗解释空闲内存、可用内存与缓存的区别，教你查看 MemAvailable、对比任务前后变化，并判断何时需要排查。">
+<meta property="og:url" content="https://liulao.blog/posts/daily-2026-11-24-openwrt-free-vs-available-memory/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="六佬上网指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png"><meta property="og:image:alt" content="六佬上网指南">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenWrt 内存占用很高怎么办？先分清空闲和可用">
+<meta name="twitter:description" content="OpenWrt 内存占用很高怎么办？通俗解释空闲内存、可用内存与缓存的区别，教你查看 MemAvailable、对比任务前后变化，并判断何时需要排查。">
+<meta name="twitter:image" content="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<meta name="author" content="六佬"><meta property="article:published_time" content="2026-11-24T12:53:27&#43;08:00"><meta property="article:modified_time" content="2026-11-24T12:53:38&#43;08:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://liulao.blog/posts/daily-2026-11-24-openwrt-free-vs-available-memory/#article","@type":"BlogPosting","author":{"@type":"Person","name":"六佬"},"dateModified":"2026-11-24T12:53:38+08:00","datePublished":"2026-11-24T12:53:27+08:00","description":"OpenWrt 内存占用很高怎么办？通俗解释空闲内存、可用内存与缓存的区别，教你查看 MemAvailable、对比任务前后变化，并判断何时需要排查。","headline":"OpenWrt 内存占用很高怎么办？先分清空闲和可用","inLanguage":"zh-CN","mainEntityOfPage":{"@id":"https://liulao.blog/posts/daily-2026-11-24-openwrt-free-vs-available-memory/","@type":"WebPage"},"url":"https://liulao.blog/posts/daily-2026-11-24-openwrt-free-vs-available-memory/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://liulao.blog/","name":"六佬上网指南","position":1},{"@type":"ListItem","item":"https://liulao.blog/posts/daily-2026-11-24-openwrt-free-vs-available-memory/","name":"OpenWrt 内存占用很高怎么办？先分清空闲和可用","position":2}]}]}</script>
+
+<script>(()=>{let mode='system';try{const saved=localStorage.getItem('reader-theme');if(['system','light','dark'].includes(saved))mode=saved}catch{}const root=document.documentElement;root.dataset.colorMode=mode;root.classList.toggle('dark',mode==='dark'||(mode==='system'&&matchMedia('(prefers-color-scheme: dark)').matches))})();</script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/style.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/advertisements.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/search.css"><script defer src="https://liulao.blog/assets/theme/search.js"></script>
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/network-portal-1.0.2.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/viewer.css">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/reader.css">
+<link rel="icon" href="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png">
+<link rel="stylesheet" href="https://liulao.blog/assets/theme/artalk.css"><script defer src="https://liulao.blog/assets/theme/artalk.js"></script>
+<script defer src="https://liulao.blog/assets/theme/theme.js"></script>
+<script defer src="https://liulao.blog/assets/theme/reader.js"></script>
+<script defer src="https://liulao.blog/assets/theme/viewer.js"></script>
+<script defer src="https://liulao.blog/assets/theme/image-viewer.js"></script>
+
+<script defer src="https://liulao.blog/assets/theme/interactions.js"></script>
+
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5NFX4LKW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta name="msvalidate.01" content="3D562902FFD6655EA5B649095B7D8365" />
+
+<script defer src="https://liulao.blog/assets/xblog/google-analytics.js" data-xblog-google-analytics="G-CP3ZGGL7ZQ" data-site-hosts="liulao.blog,www.liulao.blog"></script></head>
+
+<body class="reader-page portal-page article-page">
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="https://liulao.blog/"><img src="https://liulao.blog/assets/media/bc4c662b-d3ff-4c10-affb-6bd60a9a2da3.png" alt="" width="38" height="38"><span>六佬上网指南</span></a>
+<nav id="site-navigation" aria-label="站点导航"><a href="https://liulao.blog/">首页</a></nav>
+<a class="search-toggle" href="https://liulao.blog/search/" data-open-dialog="search-dialog" aria-haspopup="dialog" aria-controls="search-dialog" aria-label="搜索" title="搜索"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></a>
+<button id="theme-mode" class="theme-toggle theme-cycle" type="button" aria-label="明暗模式：跟随系统，点击切换为明亮" title="跟随系统 · 点击切换为明亮">
+<svg class="theme-icon-system" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+<svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.5A8.5 8.5 0 0 1 8.5 3.8 8.5 8.5 0 1 0 20.2 15.5Z"/></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+<span id="theme-mode-status" class="visually-hidden" role="status" aria-live="polite"></span>
+<button id="menu-toggle" class="menu-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="打开菜单" title="打开菜单">
+<svg class="menu-icon-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+<svg class="menu-icon-close" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>
+</button>
+</div>
+</header>
+
+<div class="page-viewport article-viewport"><div class="page-scroll article-scroll">
+<main id="main" tabindex="-1" class="shell portal-shell article-shell" data-has-toc="true">
+
+<nav class="breadcrumbs" aria-label="面包屑导航"><ol><li><a href="https://liulao.blog/">六佬上网指南</a></li><li><span aria-current="page">OpenWrt 内存占用很高怎么办？先分清空闲和可用</span></li></ol></nav>
+
+
+<article data-pagefind-body>
+<header class="article-header">
+<div class="eyebrow" data-pagefind-ignore>知识与指南</div>
+<h1 data-pagefind-meta="title">OpenWrt 内存占用很高怎么办？先分清空闲和可用</h1>
+<div class="metadata" data-pagefind-ignore><span>六佬</span><time datetime="2026-11-24T12:53:27&#43;08:00">2026-11-24</time><span><span id="page-views">—</span> 次阅读</span></div>
+<div class="chips" data-pagefind-ignore><a href="https://liulao.blog/categories/soft-router-troubleshooting/">软路由排障</a></div>
+</header>
+<div class="prose"><p>OpenWrt 内存占用很高，先看“可用内存”，再看有没有卡顿、程序退出等实际问题。只看到“空闲很少”或“已用百分比很高”，还不能判断软路由内存不够；系统可能把一部分内存用来缓存文件。</p>
+<p>这篇适合打开后台后担心内存快满了、想知道该不该清缓存或重启的朋友。先记住三件事：</p>
+<ul>
+<li>看清“空闲”和“可用”，它们不是一个数字。</li>
+<li>对比同一台机器在任务开始前、运行中和结束后的变化。</li>
+<li>已经出现故障时，先留记录，再考虑重启。</li>
+</ul>
+<h2 id="heading">空闲内存和可用内存有什么区别？</h2>
+<p>内存可以理解为程序运行时的工作台。OpenWrt 会把一些读过的文件内容暂存在内存里，下次读取时可能更省事，这就是这里说的缓存。</p>
+<p>在内存信息中，先认识这几个字段就够了：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>用日常话怎么理解</th>
+<th>查看时注意什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MemTotal</td>
+<td>系统可使用的内存总量</td>
+<td>不一定等于包装上标出的容量</td>
+</tr>
+<tr>
+<td>MemFree</td>
+<td>当前完全空闲的内存</td>
+<td>数值小，不等于已经没有余地</td>
+</tr>
+<tr>
+<td>MemAvailable</td>
+<td>系统估算还能供新程序使用的内存</td>
+<td>判断剩余余量时更有参考价值</td>
+</tr>
+<tr>
+<td>Cached</td>
+<td>文件等内容占用的缓存</td>
+<td>不能把这一项全部当成随时可用</td>
+</tr>
+</tbody>
+</table>
+<p>MemAvailable 会考虑一部分能够回收的内存，也会给系统正常运行留出需要的部分。它是估算值，不是保证任何程序都能顺利启动的承诺。不要简单把“空闲＋全部缓存”当成准确的可用内存。<a href="https://docs.kernel.org/filesystems/proc.html#meminfo">Linux 内核内存字段说明</a></p>
+<h2 id="heading-1">第一步：在后台看清字段名称</h2>
+<p>打开 OpenWrt 管理页面，通常在“状态 → 概览”的内存区域查看。不同固件、翻译和主题的显示会有差别，重点找“可用”或“Total Available”，同时记录总量和已用数值。</p>
+<p>截至本文核对时，OpenWrt 官方 LuCI（网页管理界面）的主线代码把“已用”按“总量减空闲”计算，因此缓存也可能包含在这个已用数字里。你的固件可能采用其他版本，不能只拿两张界面的百分比直接比较。<a href="https://github.com/openwrt/luci/blob/master/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/20_memory.js">LuCI 官方内存页面代码</a></p>
+<p>如果页面没有明确的可用数字，不要凭进度条颜色下结论。已经会用 SSH，也就是通过终端登录路由器的朋友，可以在<strong>路由器的终端</strong>执行：</p>
+<pre><code class="language-sh">cat /proc/meminfo
+</code></pre>
+<p>这条命令只读取内存信息。找到前面表格中的字段，保留原来的单位一起记录即可。某些较旧的系统可能没有全部字段；没有 MemAvailable 时，不要自己猜一个数值来代替。</p>
+<p>不熟悉终端也没关系，先把后台内存区域截图保存，继续做下面的对比。</p>
+<h2 id="heading-2">第二步：看变化，也看实际使用情况</h2>
+<p>只截一次图，很难知道数字是在正常波动，还是一直往下掉。可以按下面顺序记三次：</p>
+<ol>
+<li><strong>平常使用时</strong>：记录时间、可用内存，以及正在运行的额外任务。</li>
+<li><strong>出现变化时</strong>：例如刚开始下载、运行容器或处理大文件，记下同样的信息。</li>
+<li><strong>任务结束后</strong>：等一会儿再看，留意可用内存是否恢复、操作是否顺畅。</li>
+</ol>
+<p>每次尽量在同一个页面、用同一种单位比较。任务结束后，缓存不一定立即消失，所以不能要求“空闲”必须回到刚开机时的数值。</p>
+<table>
+<thead>
+<tr>
+<th>你看到的情况</th>
+<th>下一步怎么做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空闲少，可用内存相对稳定，日常使用正常</td>
+<td>先观察，不用为了百分比好看马上处理</td>
+</tr>
+<tr>
+<td>同样的使用条件下，可用内存持续下降，并且程序反复退出或页面卡住</td>
+<td>保存记录和日志，排查相关任务</td>
+</tr>
+<tr>
+<td>内存数字变化不明显，但仍然断网</td>
+<td>继续按断网发生时的现象查原因，别只盯着内存</td>
+</tr>
+</tbody>
+</table>
+<p>这里没有“超过 80% 就一定危险”的统一线。机器容量、运行的服务和统计方式不同，单个百分比不能代替判断；可用内存看起来不少，也不能排除其他故障。</p>
+<h2 id="heading-3">第三步：确实有异常，再缩小范围</h2>
+<p>如果某个操作一开始，可用内存就持续减少，而且同时出现故障，可以先做一次简单对照：</p>
+<ul>
+<li>记录路由器型号、固件版本、发生时间和当时运行的任务。</li>
+<li>保存故障发生前后的内存信息与日志。</li>
+<li>从相关软件自己的页面，暂停一个你明确认识、暂时不需要的额外任务，再观察变化。</li>
+</ul>
+<p>一次只改一项，才知道哪一步带来了变化。不要看到某个程序排在内存列表前面，就直接结束它；它可能承担着家里的正常联网功能。</p>
+<p>暂停任务后恢复，只能说明它值得进一步检查，还不能直接证明存在“内存泄漏”，也就是程序占用的内存没有正常归还。接下来应结合该软件的日志、版本说明和相同操作能否再次触发问题来判断。</p>
+<p>准备重启前，可以先看本站的<a href="https://liulao.blog/posts/daily-2026-11-21-openwrt-save-logs-before-reboot/">OpenWrt 断网后重启就好？先保存日志再排查</a>，把关键线索留下来。</p>
+<h2 id="heading-4">要不要定时清缓存？</h2>
+<p>日常使用不建议为了降低“已用”数字，设置定时清理系统缓存。</p>
+<p>Linux 会在其他任务需要内存时回收可回收的缓存。手动清掉后，后续访问可能又要重新读取、建立缓存，反而增加工作量。内核官方文档也不建议在测试、调试之外随意使用 drop_caches（手动丢弃系统缓存的接口）。<a href="https://docs.kernel.org/admin-guide/sysctl/vm.html#drop-caches">Linux 内核缓存清理说明</a></p>
+<p>清缓存后数字变好看，不代表导致故障的原因已经解决。如果某个程序确实持续占用内存，仍然需要回到那个程序本身排查。</p>
+<h2 id="heading-5">常见问题</h2>
+<h3 id="heading-6">已用内存很高，就需要换更大内存吗？</h3>
+<p>先别急着换。确认实际任务下是否反复出现内存余量不足、服务异常，以及减少额外任务后是否改善，再判断是否需要升级设备。仅凭一张占用截图，得不出可靠结论。</p>
+<h3 id="heading-7">插件提示空间不足，也按这篇处理吗？</h3>
+<p>先区分提示说的是运行内存，还是安装程序、保存文件的存储空间。硬盘大不等于运行内存大，两者要分别检查。安装插件时遇到空间不足，可以看<a href="https://liulao.blog/posts/daily-2026-11-15-openwrt-package-storage-full/">OpenWrt 安装插件提示空间不足，硬盘明明很大怎么办？</a></p>
+<h3 id="heading-8">重启后占用降下来了，就算修好了吗？</h3>
+<p>还要看相同的使用过程会不会再次出现问题。如果每次运行某项任务后都出问题，只靠重启无法说明原因已经解决。保留“什么时候开始、可用内存怎样变化、同时有什么故障”这三条记录，后续排查会清楚得多。</p>
+</div>
+<div class="article-likes" data-pagefind-ignore>
+<button id="page-like" class="like-button" type="button" aria-pressed="false" aria-describedby="page-like-message" disabled>
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+<span id="page-like-label">点赞</span><span id="page-like-count">—</span>
+</button><p id="page-like-message" role="status"></p>
+</div>
+
+<nav class="pagination" aria-label="相邻文章" data-pagefind-ignore><a href="https://liulao.blog/posts/flybit-trial-monthly-or-data-pack/">← 上一篇</a><a href="https://liulao.blog/posts/daily-2026-11-23-windows-hotspot-metered-connection/">下一篇 →</a></nav>
+<section class="comments-section" data-pagefind-ignore><h2>评论</h2><div id="comments"></div></section>
+</article>
+<div class="article-rail">
+<aside class="toc"><div>本篇目录</div><nav aria-label="文章目录"><a class="level-2" href="#heading">空闲内存和可用内存有什么区别？</a><a class="level-2" href="#heading-1">第一步：在后台看清字段名称</a><a class="level-2" href="#heading-2">第二步：看变化，也看实际使用情况</a><a class="level-2" href="#heading-3">第三步：确实有异常，再缩小范围</a><a class="level-2" href="#heading-4">要不要定时清缓存？</a><a class="level-2" href="#heading-5">常见问题</a><a class="level-3" href="#heading-6">已用内存很高，就需要换更大内存吗？</a><a class="level-3" href="#heading-7">插件提示空间不足，也按这篇处理吗？</a><a class="level-3" href="#heading-8">重启后占用降下来了，就算修好了吗？</a></nav></aside>
+</div>
+
+</main>
+</div>
+<button id="back-to-top" class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14M12 20V8m-5 5 5-5 5 5"/></svg>
+</button>
+</div>
+
+<footer class="site-footer portal-footer">
+
+<nav class="friend-links" aria-label="友情链接"><span class="friend-links-label">友情链接</span><a href="https://t.me/oldsix985" target="_blank" rel="noopener noreferrer">Telegram联系我 <span aria-hidden="true">↗</span></a></nav>
+<div class="portal-footer-bottom"><span>© 2026@六佬</span><span>资源与教程 · 持续更新</span></div>
+</footer>
+
+
+<dialog id="search-dialog" class="reader-dialog site-search" aria-labelledby="search-title" data-reader-dialog data-pagefind-ignore>
+<header class="reader-dialog-header"><h2 id="search-title">搜索文章</h2><button class="dialog-close" type="button" data-close-dialog aria-label="关闭搜索" title="关闭搜索">×</button></header>
+<div class="reader-dialog-body">
+
+<div id="site-search-ui" data-module="https://liulao.blog/pagefind/pagefind-component-ui.js" data-stylesheet="https://liulao.blog/pagefind/pagefind-component-ui.css" hidden>
+
+<pagefind-config bundle-path="https://liulao.blog/pagefind/" base-url="https://liulao.blog/" lang="zh-cn" no-worker></pagefind-config>
+<pagefind-input placeholder="搜索文章标题或正文"></pagefind-input>
+<pagefind-summary></pagefind-summary>
+<pagefind-results></pagefind-results>
+</div>
+<p id="search-status" class="search-status" role="status">正在加载搜索…</p>
+<button id="search-retry" class="button" type="button" hidden>重新加载</button>
+
+</div>
+</dialog>
+
+<script id="blog-comments-config" type="application/json">{"comments":true,"likes":true,"locale":"zh-CN","pageKey":"/p/c65e6e75-cf55-46ea-a9bf-a07c1d2ad517/","pageTitle":"OpenWrt 内存占用很高怎么办？先分清空闲和可用","server":"https://upfqpobmiewm.sealosgzg.site","site":"xblog-d57a1fe1-0246-4640-82e3-722e40e5b8a7","views":true,"viewsBase":0}</script>
+
+</body>
+</html>
